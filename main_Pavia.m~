@@ -1,0 +1,131 @@
+
+%% Clear Screen and Workspace
+clear all
+close all
+clc
+
+%% Add Hyperspectral databases to the path
+addpath('./DataBases');
+
+%% Select and load the database
+Fname =  'UPavia_Subset';
+database = 'UPavia_Subset';
+
+fprintf('Loading hyperspectral datacue and preparing data \n');
+load(database);
+
+hyperimg = paviaU; %Set Hyperspectral image
+hyperimg_gt = paviaU_gt; %Set Hyperspectral image groundtruth
+
+[M,N,L]=size(hyperimg); 
+s = hyperimg_gt(:);
+
+%% Reshape the data cube to LxMN matrix
+Xfull=reshape(hyperimg,M*N,L);
+Xfull=Xfull';
+
+%% Set coded aperture design parameters
+
+shots =25;    %Measurement shots
+delta = 10;   %Bandpass filters bandwidth
+designed = 1; % 1 = Use designed codes, 0 = use random codes
+noise = 25;   % Noise added 
+
+%% Sparse Subspace Clustering parameters
+
+l = 8;% number of clusters
+
+% Original SSC parameters
+alpha = [1000,300];
+r = 0; % data projection
+affine = true; % affine constraint
+outlier = false; % data has outlier
+rho = 0.7;
+la = 7.76e-7; % sparsity/noise tradeoff
+
+% Spatial information regularization parameter
+alphass = 8500;
+
+%% Compressive Spectral Imaging (CSI) acquisition
+fprintf('Acquiring compressed measurements \n');
+
+Phi = generateCodes(L,shots,delta,designed);
+
+% Acquire the compressed measurements
+X = Phi*Xfull;
+
+% Add noise to the measurements
+if noise>0
+    X = awgn(X,noise,'measured');
+end
+
+% Data normalization
+ X = X.*sqrt(delta/shots);
+
+ 
+ [results,C,img] = SSC_S4C(X,r,affine,alpha,outlier,rho,s,l,la,al,M,N,crV,Fname);
+            Res{k} = {results, img};
+            k = k+1;
+        end
+        k=1;
+        parameters = {shots,delta,noise,l,alpha,rho,la,alphass};
+        results_perIter{iter}={Res,Filters,parameters};
+
+
+Exp1 = results_perIter;
+clear results_perIter;
+
+% save(['Results/',Fname,'/Exp1/Exp1.mat'],'Exp1');
+fprintf(['Experiment 1 ends at: ',datestr(datetime('now')),'\n'])
+%% Experiment II
+% fprintf(['Experiment 2 start at: ',datestr(datetime('now')),'\n'])
+% R_PAV=cell(5,5);
+% 
+% ss=1;
+% for shots = [5 10 20 35 50]
+%     dd=1;
+%     for delta = [5 10 20 35 50]
+%         
+%         %Fixed parameters
+%         noise = 25;
+%         alphass = 85*10^2 ;
+%         
+%         parfor iter = 1:5  %% numero de iteraciones
+%             
+%             %CSI acquisition
+%             [X,dmd,pos, Filters,H]=sensing_process(hyperimg,shots,tr,delta,designed);
+%             
+%             [X] = reordering(X,pos);
+%             
+%             %Add Noise
+%             if noise>0
+%                 X = awgn(X,noise,'measured');
+%             end
+%             
+%             %Data Normalization
+%             
+%             X = X.*sqrt(delta/shots);
+% %             X = X - mean(X(:));
+% %             X = X./std(X(:));
+%             
+%             for al=alphass
+%                 
+%                 [results,C,img] = SSC_S4C(X,r,affine,alpha,outlier,rho,s,l,la,al,M,N,crV,Fname);
+%                 
+%             end
+%             parameters = {shots,delta,noise,l,alpha,rho,la,alphass};
+%             results_perIter{iter}={results,img,Filters,parameters};
+%         end
+%         
+%         R_PAV{ss,dd} = results_perIter;
+%         save(['Results/',Fname,'/Exp2/Exp2.mat'],'R_PAV');
+%         
+%         
+%         dd = dd+1;
+%     end
+%     ss = ss +1;
+% end
+% fprintf(['Experiment 2 ends at: ',datestr(datetime('now')),'\n'])
+
+%hacer este experimento para no diseñados
+%hacer tablas de parametros !!
