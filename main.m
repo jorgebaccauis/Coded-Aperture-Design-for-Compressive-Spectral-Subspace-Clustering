@@ -13,7 +13,7 @@ verbose = true;
 % 2:    GPU Double
 % 3:    CPU
 
-arch = 2;
+arch = 1;
 
 %% Add Hyperspectral databases and auxiliary codes to the path
 addpath('./DataBases');
