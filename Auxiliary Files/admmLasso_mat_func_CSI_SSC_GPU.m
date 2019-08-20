@@ -101,28 +101,6 @@ else
     %Set Erros
     err1 = 10*thr1; err2 = 10*thr2; err3 = 10*thr1;
     
-    %% For CPU
-%         Q = inv(mu1*(Y'*Y)+mu2*eye(N)+mu3*eye(N)+mu3*ones(N,N));
-%         C1 = zeros(N,N); % C^k
-%         C_average = zeros(N,N); %\bar{C}k^k
-%         Lambda2 = zeros(N,N); % Delta^k
-%         lambda3 = zeros(1,N); % delta^kT
-    
-    %% For GPU double
-%     Q = inv(mu1*(Y'*Y)+mu2*eye(N)+mu3*eye(N)+mu3*ones(N,N));
-%     Q = gpuArray(Q);
-%     C1 = zeros(N,N); % C^k
-%     C1 = gpuArray(C1);
-%     C_average = zeros(N,N); %\bar{C}k^k
-%     C_average = gpuArray(C_average);
-%     Lambda2 = zeros(N,N); % Delta^k
-%     Lambda2 = gpuArray(Lambda2);
-%     lambda3 = zeros(1,N); % delta^kT
-%     lambda3 = gpuArray(lambda3);
-%     err1 = gpuArray(err1);
-%     err2 = gpuArray(err2);
-%     err3 = gpuArray(err3);
-    
     %% For GPU single
     Y= single(Y);
     Q = inv(mu1*(Y'*Y)+mu2*eye(N,'single')+mu3*eye(N,'single')+mu3*ones(N,N,'single'));
@@ -156,19 +134,9 @@ else
         
         % update \bar{C}
         C_temp = reshape(C2,Md,Nd,N);
-
-%         kernel = ones(3)/9;
-        %kernel = fspecial('log',3,0.5);
-%         C_averagetemp = imfilter(C_temp, kernel, 'symmetric');
         
-        %%->Paper Cosi 2018 -> C_averagetemp = imgaussfilt3(C_temp,6,'padding','symmetric');
-        
-        %%->Paper CVPR 2018 -> 
         C_averagetemp = medfilt3(C_temp,'symmetric');
         
-        %C_averagetemp = ordfilt3(C_temp,'med',3,'symmetric');
-        
-        %C_averagetemp = imguidedfilter(C_temp);
         C_average = reshape(C_averagetemp,N,N);
         
         % updating Lagrange multipliers

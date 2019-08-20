@@ -8,8 +8,17 @@ clc
 
 verbose = true;
 
-%% Add Hyperspectral databases to the path
+%% Choose Architecture
+% 1:    GPU Single
+% 2:    GPU Double
+% 3:    CPU
+
+arch = 2;
+
+%% Add Hyperspectral databases and auxiliary codes to the path
 addpath('./DataBases');
+addpath('./Auxiliary Files/');
+addpath('./Coding Patterns Design/');
 
 %% Select and load the database
 Fname =  'UPavia_Subset';
@@ -73,12 +82,12 @@ end
 X = X.*sqrt(delta/shots);
 
 %% Compressed Sparse Subspace Clustering With Spatial Regularizer
-[results,C,img] = CSI_SSC(X,r,affine,alpha,outlier,rho,s,l,la,alphass,M,N,Fname);
+[results,C,img] = CSI_SSC(X,r,affine,alpha,outlier,rho,s,l,la,alphass,M,N,Fname,arch);
 
 % Recolecting results
 Res = {results, img};
 parameters = {shots,delta,noise,l,alpha,rho,la,alphass};
-results{iter}={Res,Phi,parameters};
+results = {Res,Phi,parameters};
 
 fprintf(['Experiment ends at: ',datestr(datetime('now')),'\n'])
 fprintf('=======================================================\n');
