@@ -33,18 +33,6 @@ else
         img(find(grps==14),3)=1;
         img(find(grps==14),2)=1;
         
-%         grps(grps==crV)=0;
-%         img(find(grps==0),2)=0.8;
-%         img(find(grps==1),1)=1;
-%         img(find(grps==1),3)=0.5;
-%         img(find(grps==10),3)=1;
-%         img(find(grps==11),1)=1;
-%         img(find(grps==11),2)=1;
-%         img(find(grps==12),1)=1;
-%         img(find(grps==12),2)=0.7;
-%         img(find(grps==14),3)=1;
-%         img(find(grps==14),2)=1;
-        
     else
         grps(grps==1)=0;
         img(find(grps==0),1)=0.81;
