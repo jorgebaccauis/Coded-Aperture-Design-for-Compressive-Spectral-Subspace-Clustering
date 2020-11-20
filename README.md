@@ -65,4 +65,5 @@ month={Dec},
 ## Authors
 
 * **Carlos Hinojosa** - [GitHub](https://github.com/carlosh93) - [WebPage](https://carlosh93.github.io/) - [Scholar](https://scholar.google.com/citations?hl=es&user=KP02_jwAAAAJ)
+* **Jorge Bacca** - [GitHub](https://github.com/jorgebaccauis)  - [Scholar](https://scholar.google.com/citations?user=I5f1HjEAAAAJ&hl=es)
 
